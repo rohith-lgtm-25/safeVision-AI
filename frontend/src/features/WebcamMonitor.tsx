@@ -12,8 +12,7 @@ import {
   AlertCircle,
   RefreshCw,
 } from 'lucide-react';
-
-const API_BASE = 'http://localhost:8000/api';
+import { API_BASE } from '../config';
 
 // How long (ms) to wait between frame captures.
 // Default 150 ms (~6.7 FPS inference rate). Native video remains 30 FPS.

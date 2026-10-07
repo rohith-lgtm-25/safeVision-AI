@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Upload, Loader2, CheckCircle, AlertCircle, Download, Play } from 'lucide-react';
-
-const API_BASE = 'http://localhost:8000/api';
+import { API_BASE } from '../config';
 const POLL_INTERVAL_MS = 2000;
 const ALLOWED_TYPES = ['video/mp4', 'video/quicktime', 'video/x-msvideo'];
 const ALLOWED_EXTS = ['.mp4', '.mov', '.avi'];

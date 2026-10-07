@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { Loader2, AlertTriangle, RefreshCw, Image as ImageIcon, Video, Camera, ChevronLeft, ChevronRight } from 'lucide-react';
-
-const API = 'http://localhost:8000/api';
+import { API_BASE as API } from '../config';
 const PAGE_SIZE = 20;
 
 interface Session {

@@ -4,8 +4,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
 import { Image as ImageIcon, Video, Camera, AlertTriangle, RefreshCw, Loader2 } from 'lucide-react';
-
-const API = 'http://localhost:8000/api';
+import { API_BASE as API } from '../config';
 
 interface Stats {
   total_sessions:   number;

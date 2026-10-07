@@ -49,3 +49,4 @@ ppe_vision_model = SafeVisionModel(_PPE_PATH) if _os.path.exists(_PPE_PATH) else
 
 # Alias for any legacy imports
 detection_model = ppe_vision_model
+safe_vision_model = ppe_vision_model
