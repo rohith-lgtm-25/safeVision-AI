@@ -1,0 +1,48 @@
+# Operating System
+.DS_Store
+Thumbs.db
+
+# Python & Virtual Environments
+venv/
+backend/venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node.js & Frontend
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+dist-ssr/
+*.local
+
+# SQLite Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files & uploads
+backend/temp/
+backend/uploads/
+backend/outputs/
+*.mp4
+*.avi
+*.mov
+*.jpg
+*.jpeg
+*.png
+!backend/weights/*.pt
+
+# Logs & IDEs
+*.log
+.vscode/
+.idea/

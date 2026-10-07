@@ -1,0 +1,129 @@
+================================================================================
+SafeVision AI — Execution & Verification Guide
+================================================================================
+
+This document provides step-by-step instructions to run the SafeVision AI backend
+and frontend services, perform automated test checks, and verify that the 4-class
+PPE detection system (helmet, no_helmet, mask, no_mask) is fully operational.
+
+--------------------------------------------------------------------------------
+1. PREREQUISITES
+--------------------------------------------------------------------------------
+- Python 3.10+ (Virtual environment pre-configured at `backend/venv`)
+- Node.js & npm (installed)
+- Custom YOLO PPE Model Weights placed at:
+  `backend/weights/best.pt`
+  Classes:
+    0: helmet
+    1: no_helmet
+    2: mask
+    3: no_mask
+
+--------------------------------------------------------------------------------
+2. STEP-BY-STEP: STARTING THE BACKEND SERVICE
+--------------------------------------------------------------------------------
+Open Terminal 1 and execute:
+
+  cd /Users/rohi/Desktop/pb/safevision-ai/backend
+  source venv/bin/activate
+  uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+Expected Console Output:
+  INFO:     Loading YOLO model on device: cpu
+  INFO:     Model loaded successfully.
+  INFO:     PPE model loaded from .../backend/weights/best.pt
+  INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+
+API Endpoints Summary:
+  - GET  /                                  Root API health check
+  - POST /api/detect/image                  Single image detection
+  - POST /api/detect/frame                  Webcam frame detection
+  - POST /api/detect/video                  Upload video for processing
+  - GET  /api/detect/video/{id}/status      Poll video processing progress
+  - GET  /api/detect/video/{id}/result      Download annotated video
+  - GET  /api/history                       Retrieve detection session history
+  - GET  /api/history/stats                 Dashboard summary statistics
+  - POST /api/history/webcam                Save webcam monitoring session summary
+
+--------------------------------------------------------------------------------
+3. STEP-BY-STEP: STARTING THE FRONTEND SERVICE
+--------------------------------------------------------------------------------
+Open Terminal 2 and execute:
+
+  cd /Users/rohi/Desktop/pb/safevision-ai/frontend
+  npm run dev -- --host 0.0.0.0 --port 5173
+
+Expected Console Output:
+  VITE v8.3.2 ready in XXX ms
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://<IP>:5173/
+
+--------------------------------------------------------------------------------
+4. STEP-BY-STEP: RUNNING AUTOMATED SUITE VERIFICATION
+--------------------------------------------------------------------------------
+To run all automated backend unit and integration tests:
+
+  cd /Users/rohi/Desktop/pb/safevision-ai/backend
+  source venv/bin/activate
+  python -m pytest tests/ -v
+
+Expected Output:
+  ======================== 31 passed in X.XXs ========================
+
+To test frontend production build and TypeScript compilation:
+
+  cd /Users/rohi/Desktop/pb/safevision-ai/frontend
+  npm run build
+
+Expected Output:
+  ✓ built in XXXms (dist/ index.html, index.css, index.js generated cleanly)
+
+--------------------------------------------------------------------------------
+5. MANUAL FUNCTIONAL VERIFICATION STEPS
+--------------------------------------------------------------------------------
+
+A. Verify Image Module:
+   1. Open http://localhost:5173 in your browser (Brave, Chrome, Safari, etc.).
+   2. Select the "Image Detection" tab.
+   3. Drag-and-drop or upload a sample image containing workers or people.
+   4. Click "Run Detection".
+   5. Verify:
+      - Bounding boxes are drawn around detected heads/faces with PPE labels:
+        * helmet (Blue box)
+        * no_helmet (Red box)
+        * mask (Green box)
+        * no_mask (Orange box)
+      - Confidence scores (e.g. `helmet 0.92`) are displayed above each box.
+      - COCO general labels (e.g., person, car) are NOT drawn.
+
+B. Verify Video Module:
+   1. Select the "Video Detection" tab.
+   2. Upload an MP4, MOV, or AVI video.
+   3. Observe the progress bar advance from 0% to 100%.
+   4. Play or download the completed annotated video and verify bounding boxes.
+
+C. Verify Webcam Feed Module:
+   1. Select the "Webcam Feed" tab.
+   2. Allow camera access permissions when prompted.
+   3. Click "Start Monitoring".
+   4. Live preview frame updates in real-time with annotated PPE bounding boxes.
+   5. Check the "PPE Detections — Last Frame" card below the video for counts.
+   6. Click "Stop Monitoring" to conclude the session and save the summary to history.
+
+D. Verify Dashboard & History:
+   1. Click the "Dashboard" tab to view real-time statistics cards (Total Sessions,
+      Image/Video/Webcam breakdown, Top PPE Detections chart).
+   2. Click the "History" tab to review past detection records, duration,
+      source types, timestamps, and per-class PPE counts.
+
+--------------------------------------------------------------------------------
+6. SUMMARY OF VERIFIED CHANGES IN DRAW.PY & PIPELINE
+--------------------------------------------------------------------------------
+- `backend/vision/draw.py`: Optimized bounding box rendering loop with fast NumPy
+  vectorization and precise 4-class PPE color coding:
+    - 0: helmet    -> BGR (255, 0, 0)   [Blue]
+    - 1: no_helmet -> BGR (0, 0, 255)   [Red]
+    - 2: mask      -> BGR (0, 255, 0)   [Green]
+    - 3: no_mask   -> BGR (0, 165, 255) [Orange]
+- Single model pipeline utilizing `backend/weights/best.pt` exclusively.
+================================================================================
